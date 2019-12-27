@@ -75,3 +75,26 @@ def getAll():
         CONNECTION.close()
     
     return categories
+
+
+def getByName(nom):
+    """
+    selectionner en fonction du nom de la categorie
+    """
+    categorie = None
+    try:
+        CONNECTION.ping() # ouvrir la connexion si elle a été fermée
+        with CONNECTION.cursor() as cursor:
+            # Enregistrer
+            sql = "SELECT * FROM `categories` WHERE nom=%s"
+            cursor.execute(sql, (nom, ))
+            categorie = cursor.fetchone()
+
+    except Exception as e:
+        print('une erreur est survenue')
+        print(e)
+    
+    finally:
+        CONNECTION.close()
+    
+    return categorie
