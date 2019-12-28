@@ -4,7 +4,7 @@ la partie graphique de gestion des produits
 -un tableau de tous les produits
 
 '''
-from tkinter import Frame, IntVar, StringVar, Tk
+from tkinter import END, Frame, IntVar, StringVar, Tk, TclError
 from tkinter.messagebox import showerror, showinfo, showwarning
 from tkinter.ttk import Button, Combobox, Entry, Label, Treeview
 
@@ -18,7 +18,6 @@ class ProduitView(Frame):
         super().__init__(root)
         self.frameform = Frame(root)
         self.frametable = Frame(root)
-        self.table = Treeview(self.frametable)
 
         self.frameform.pack()
         self.frametable.pack()
@@ -38,8 +37,9 @@ class ProduitView(Frame):
             
             if self.nom.get() is not '' and self.quantite.get() != '' and self.categorie.get() != '':
                 categorie = getByName(self.categorie.get()) # recuperation de la categorie selectionnee
-                val = Produit.create(self.nom.get(), self.quantite.get(), 
-                self.prix.get(), self.date_expiration.get(), categorie['id'])
+                values = self.nom.get(), self.quantite.get(), \
+                    self.prix.get(), self.date_expiration.get(), categorie['id']
+                val = Produit.create(*values)
                 if val == 1:
                     showinfo("Succès", 'Enregistrement ok')
                     # vider les champs de saisi
@@ -48,6 +48,7 @@ class ProduitView(Frame):
                     self.quantite.set(0)
                     self.date_expiration.set('')
                     self.categorie.set('')
+                    # self.tree.insert('', END, values=values)
                 else:
                     showerror('Erreur', "Une erreur est survenue")
             else:
@@ -61,8 +62,6 @@ class ProduitView(Frame):
                 t.append(ct['nom'])
             return t
 
-
-            
 
         Label(self.frameform, text='Formulaire d\'enregistrement').grid(row=0, column=1)
         Label(self.frameform, text='Nom').grid(row=1, column=0)
@@ -83,6 +82,39 @@ class ProduitView(Frame):
         ).grid(row=5, column=1, pady=5)
 
         Button(self.frameform, text='Enregistrer', command=save).grid(row=6, column=1, sticky='ne')
+
+
+        
+    def table(self):
+        Label(self.frametable, text='Liste des produits').pack()
+        self.tree = Treeview(self.frametable)
+        
+        self.tree['columns'] = ('id', 'nom', 'quantite', 'prix', 'expiration', 'categorie')
+
+        self.tree.column('id', width=30)
+        self.tree.column('quantite', width=100)
+
+        self.tree.heading('id', text='Id')
+        self.tree.heading('nom', text='Nom')
+        self.tree.heading('quantite', text='Quantite')
+        self.tree.heading('prix', text='Prix')
+        self.tree.heading('expiration', text='Expiration')
+        self.tree.heading('categorie', text='Id Categorie')
+
+        self.fill_table()
+        self.tree.pack()
+    
+    def fill_table(self):
+        produits = Produit.all()
+        for index, produit in enumerate(produits):
+            try:
+
+                self.tree.insert('', produit['id'], index, values=(produit['id'], produit['nom'],
+                produit['quantite'], produit['prix'],
+                produit['date_expiration'], produit['id_categorie']))
+            except TclError as exc:
+                print('erreur lors de l\'ajout d\' une ligne')
+                print(exc)
 
 
         

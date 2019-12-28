@@ -12,6 +12,7 @@ if __name__ == "__main__":
 
     pview = ProduitView(root)
     pview.form()
+    pview.table()
 
 
 
