@@ -9,7 +9,7 @@ from tkinter.messagebox import showerror, showinfo, showwarning
 from tkinter.ttk import Button, Combobox, Entry, Label, Treeview
 
 from .models import Produit
-from categorie.models import getAll, getByName
+from categorie.models import Categorie
 
 class ProduitView(Frame):
 
@@ -36,7 +36,7 @@ class ProduitView(Frame):
             
             
             if self.nom.get() is not '' and self.quantite.get() != '' and self.categorie.get() != '':
-                categorie = getByName(self.categorie.get()) # recuperation de la categorie selectionnee
+                categorie = Categorie.getByName(self.categorie.get()) # recuperation de la categorie selectionnee
                 values = self.nom.get(), self.quantite.get(), \
                     self.prix.get(), self.date_expiration.get(), categorie['id']
                 val = Produit.create(*values)
@@ -56,7 +56,7 @@ class ProduitView(Frame):
         
 
         def getCategories():
-            cts = getAll()
+            cts = Categorie.getAll()
             t = []
             for ct in cts:
                 t.append(ct['nom'])
