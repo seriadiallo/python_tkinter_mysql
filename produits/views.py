@@ -16,11 +16,7 @@ class ProduitView(Frame):
 
     def __init__(self, root):
         super().__init__(root)
-        self.frameform = Frame(root)
-        self.frametable = Frame(root)
-
-        self.frameform.pack()
-        self.frametable.pack()
+        
 
         self.nom = StringVar()
         self.prix = IntVar()
@@ -28,8 +24,14 @@ class ProduitView(Frame):
         self.date_expiration = StringVar()
         self.categorie = StringVar()
 
+        self.form(root)
+        self.table(root)
+
     
-    def form(self):
+    def form(self, root):
+
+        frameform = Frame(root)
+        frameform.pack()
 
         def save():
 
@@ -63,31 +65,36 @@ class ProduitView(Frame):
             return t
 
 
-        Label(self.frameform, text='Formulaire d\'enregistrement').grid(row=0, column=1)
-        Label(self.frameform, text='Nom').grid(row=1, column=0)
-        Entry(self.frameform, textvariable=self.nom).grid(row=1, column=1, pady=5)
+        Label(frameform, text='Formulaire d\'enregistrement').grid(row=0, column=1)
+        Label(frameform, text='Nom').grid(row=1, column=0)
+        Entry(frameform, textvariable=self.nom).grid(row=1, column=1, pady=5)
 
-        Label(self.frameform, text='Quantite').grid(row=2, column=0)
-        Entry(self.frameform, textvariable=self.quantite).grid(row=2, column=1, pady=5)
+        Label(frameform, text='Quantite').grid(row=2, column=0)
+        Entry(frameform, textvariable=self.quantite).grid(row=2, column=1, pady=5)
 
-        Label(self.frameform, text='Prix').grid(row=3, column=0)
-        Entry(self.frameform, textvariable=self.prix).grid(row=3, column=1, pady=5)
+        Label(frameform, text='Prix').grid(row=3, column=0)
+        Entry(frameform, textvariable=self.prix).grid(row=3, column=1, pady=5)
 
-        Label(self.frameform, text='Date Expiration').grid(row=4, column=0)
-        Entry(self.frameform, textvariable=self.date_expiration).grid(row=4, column=1, pady=5)
+        Label(frameform, text='Date Expiration').grid(row=4, column=0)
+        Entry(frameform, textvariable=self.date_expiration).grid(row=4, column=1, pady=5)
 
-        Label(self.frameform, text='Categorie').grid(row=5, column=0)
-        Combobox(self.frameform, textvariable=self.categorie,
+        Label(frameform, text='Categorie').grid(row=5, column=0)
+        Combobox(frameform, textvariable=self.categorie,
         values=getCategories(),
         ).grid(row=5, column=1, pady=5)
 
-        Button(self.frameform, text='Enregistrer', command=save).grid(row=6, column=1, sticky='ne')
+        Button(frameform, text='Enregistrer', command=save).grid(row=6, column=1, sticky='ne')
 
 
         
-    def table(self):
-        Label(self.frametable, text='Liste des produits').pack()
-        self.tree = Treeview(self.frametable)
+    def table(self, root):
+        frametable = Frame(root)
+
+        
+        frametable.pack()
+        
+        Label(frametable, text='Liste des produits').pack()
+        self.tree = Treeview(frametable)
         
         self.tree['columns'] = ('id', 'nom', 'quantite', 'prix', 'expiration', 'categorie')
 
